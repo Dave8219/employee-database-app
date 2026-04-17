@@ -1,0 +1,79 @@
+body {
+  height: 2000px;
+}
+
+input {
+  font-size: 1rem;
+  padding: 5px;
+  width: 95%;
+}
+
+.employee-container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  border: solid black 1px;
+}
+
+.image-container {
+  height: 20px;
+  place-items: center;
+  justify-content: center;
+}
+
+.employee-image {
+  height: 55px;
+  width: 75px;
+  object-fit: cover;
+  object-position: 30% 25%;
+  border-radius: 12px;
+}
+
+.employee-header {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  border: solid black 1px;
+}
+
+.employee-title {
+  border-right: solid black 1px;
+}
+
+.add-btn {
+  margin-top: 25px;
+}
+
+.sr-only {
+  position: absolute;
+  left: -10000px;
+}
+
+.inputs {
+  border:
+    solid 1px,
+    rgb(94, 94, 94);
+  background-color: rgb(71, 70, 70);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.submit-buttons {
+  display: flex;
+  flex-direction: row;
+  column-gap: 8px;
+  justify-content: center;
+}
+
+.delete-btn {
+  font-size: 0.75rem;
+  margin-left: 8px;
+}
+
+.edit-btn {
+  font-size: 0.75rem;
+  margin-left: 8px;
+}
+
+.save-btn {
+  font-size: 0.75rem;
+  margin-left: 8px;
+}

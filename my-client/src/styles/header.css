@@ -1,0 +1,40 @@
+li {
+  list-style: none;
+}
+
+.header-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  flex: 1;
+}
+
+.search {
+  display: flex;
+  flex: 1;
+  column-gap: 8px;
+}
+
+.search-input {
+  font-size: 1rem;
+}
+
+.nav-menu-container {
+  display: flex;
+  flex: 1;
+}
+
+.login {
+  display: flex;
+  flex: 1;
+}
+
+.nav-menu {
+  display: flex;
+  flex-direction: row;
+  column-gap: 12px;
+}
