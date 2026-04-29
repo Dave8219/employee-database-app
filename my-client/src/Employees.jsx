@@ -62,6 +62,7 @@ const RenderEmployees = () => {
       hireDate: "",
       position: "",
     });
+    setShowForm(false);
   };
 
   /*
@@ -103,12 +104,13 @@ const RenderEmployees = () => {
       position: employee.position,
     });
   };
-
+  const [showButtons, setShowButtons] = useState(false);
   const handleSave = (id) => {
     setAddedEmployee((prev) =>
       prev.map((e) => (e.id === id ? { ...e, ...editValues } : e)),
     );
     setEditingId(null);
+    setShowButtons(false);
   };
 
   const handleChange = (e) => {
@@ -129,6 +131,23 @@ const RenderEmployees = () => {
 
   return (
     <>
+      <header className="header-container">
+        <div className="logo">
+          <img src="/src/assets/logo.png" />
+        </div>
+        <div className="search">
+          <input placeholder="Search" className="search-input" />
+          <button>Search</button>
+        </div>
+        <nav className="nav-menu-container">
+          <ul className="nav-menu">
+            <li>Home</li>
+            <li>About</li>
+            <li>Contact</li>
+          </ul>
+        </nav>
+        <div className="login">Login</div>
+      </header>
       <div className="employee-header">
         <div className="employee-title">
           <h4>Employee</h4>
@@ -165,6 +184,9 @@ const RenderEmployees = () => {
         setEditValues={setEditValues}
         editingId={editingId}
         editValues={editValues}
+        handleSave={handleSave}
+        setShowButtons={setShowButtons}
+        showButtons={showButtons}
       />
       <RenderButtons setShowForm={setShowForm} />
     </>
@@ -287,9 +309,9 @@ const RenderNames = ({
   editingId,
   editValues,
   handleSave,
+  showButtons,
+  setShowButtons,
 }) => {
-  const [showButtons, setShowButtons] = useState(false);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setEditValues((prev) => ({ ...prev, [name]: value }));
@@ -328,6 +350,16 @@ const RenderNames = ({
                   value={editValues.position}
                   onChange={handleChange}
                 />
+                {showButtons && (
+                  <div className="edit-btn-container">
+                    <RenderEditButtons
+                      handleRemove={handleRemove}
+                      handleEdit={handleEdit}
+                      employee={employee}
+                      handleSave={handleSave}
+                    />
+                  </div>
+                )}
               </>
             ) : (
               <>

@@ -11,7 +11,7 @@ input {
 .employee-container {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  border: solid black 1px;
+  border: none;
 }
 
 .image-container {
@@ -76,4 +76,8 @@ input {
 .save-btn {
   font-size: 0.75rem;
   margin-left: 8px;
+}
+
+.edit-btn-container {
+  border: none;
 }
