@@ -8,6 +8,7 @@ const PORT = process.env.port || 5000;
 
 const employees = require("./routes/employees.js");
 
+// cors allows localhost frontend to connect to the backend
 app.use(
   cors({
     origin: "http://localhost:5173",
