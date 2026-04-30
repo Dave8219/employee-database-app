@@ -1,18 +1,37 @@
 import { useState, useEffect } from "react";
 import { employees } from "../employees.js";
+import axios from "axios";
 import "./styles/employees.css";
+import "./styles/header.css";
 
 const mapEmployeeFromAPI = (employee) => ({
-  id: employee._id,
-  name: employee.name,
+  id: employee.employee_id,
+  name: employee.employee_name,
   image: employee.image,
-  hourlyPay: employee.hourly_pay,
-  hireDate: employee.hire_date,
+  hourlyPay: Number(employee.hourly_pay),
+  hireDate: employee.hire_date?.split("T")[0],
   position: employee.position,
 });
 
 const RenderEmployees = () => {
   // const [myEmployees, setMyEmployees] = useState("");
+
+  const API = import.meta.env.VITE_API_BASE_URL;
+
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      try {
+        const response = await axios.get(`${API}/api/v1/employees`);
+        console.log(response.data);
+
+        setAddedEmployee(response.data.map(mapEmployeeFromAPI));
+      } catch (error) {
+        console.error("Failed to get employees database", error);
+      }
+    };
+    fetchEmployees();
+  }, [API]);
+
   const [formData, setFormData] = useState({
     image: "",
     name: "",
@@ -20,17 +39,22 @@ const RenderEmployees = () => {
     hireDate: "",
     position: "",
   });
-
+  /*
   const [addedEmployee, setAddedEmployee] = useState(() => {
     const saved = localStorage.getItem("addedEmployee");
     return saved ? JSON.parse(saved) : [];
   });
+*/
+
+  const [addedEmployee, setAddedEmployee] = useState([]);
+
   const [showForm, setShowForm] = useState(false);
 
+  /*
   useEffect(() => {
     localStorage.setItem("addedEmployee", JSON.stringify(addedEmployee));
   }, [addedEmployee]);
-
+*/
   const handleSubmit = (e) => {
     e.preventDefault();
     /*
@@ -41,7 +65,7 @@ const RenderEmployees = () => {
 
     if (
       !formData.name ||
-      !formData.hourlyPay ||
+      !formData.hourlyPay === "" ||
       !formData.hireDate ||
       !formData.position
     ) {
@@ -124,7 +148,7 @@ const RenderEmployees = () => {
     } else {
       setFormData((prev) => ({
         ...prev,
-        [id]: id === "hourly_pay" ? (value === "" ? "" : Number(value)) : value,
+        [id]: id === "hourlyPay" ? (value === "" ? "" : Number(value)) : value,
       }));
     }
   };
@@ -135,10 +159,7 @@ const RenderEmployees = () => {
         <div className="logo">
           <img src="/src/assets/logo.png" />
         </div>
-        <div className="search">
-          <input placeholder="Search" className="search-input" />
-          <button>Search</button>
-        </div>
+
         <nav className="nav-menu-container">
           <ul className="nav-menu">
             <li>Home</li>

@@ -1,11 +1,20 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
 
 const { pool } = require("./db.js");
 
 const PORT = process.env.port || 5000;
 
 const employees = require("./routes/employees.js");
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
+);
+
 app.use(express.json());
 
 app.use("/api/v1", employees);
