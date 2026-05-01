@@ -107,10 +107,15 @@ const RenderEmployees = () => {
   };
 */
 
-  const handleRemove = (id) => {
-    setAddedEmployee((prev) => {
-      return prev.filter((employee) => employee.id !== id);
-    });
+  const handleRemove = async (id) => {
+    try {
+      await axios.delete(`${API}/api/v1/employees/${id}`);
+      setAddedEmployee((prev) => {
+        return prev.filter((employee) => employee.id !== id);
+      });
+    } catch (error) {
+      console.error("Could not delete. Please try again.", error);
+    }
   };
   const [editingId, setEditingId] = useState(null);
   const [editValues, setEditValues] = useState({
