@@ -11,30 +11,17 @@ li {
 .logo {
   display: flex;
   flex: 1;
+  justify-content: end;
+  max-width: 200px;
 }
 
-.search {
+.img-logo {
+  width: 175px;
+  height: auto;
+  object-fit: contain;
+}
+
+.header-title {
   display: flex;
-  flex: 1;
-  column-gap: 8px;
-}
-
-.search-input {
-  font-size: 1rem;
-}
-
-.nav-menu-container {
-  display: flex;
-  flex: 1;
-}
-
-.login {
-  display: flex;
-  flex: 1;
-}
-
-.nav-menu {
-  display: flex;
-  flex-direction: row;
-  column-gap: 12px;
+  flex: 2;
 }

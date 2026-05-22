@@ -16,7 +16,12 @@ const mapEmployeeFromAPI = (employee) => ({
 const RenderEmployees = () => {
   // const [myEmployees, setMyEmployees] = useState("");
 
+  console.log("API:", import.meta.env.VITE_API_BASE_URL);
   const API = import.meta.env.VITE_API_BASE_URL;
+
+  const [addedEmployee, setAddedEmployee] = useState([]);
+
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -25,6 +30,7 @@ const RenderEmployees = () => {
         console.log(response.data);
 
         setAddedEmployee(response.data.map(mapEmployeeFromAPI));
+        console.log("Mapped:", response.data.map(mapEmployeeFromAPI));
       } catch (error) {
         console.error("Failed to get employees database", error);
       }
@@ -33,7 +39,6 @@ const RenderEmployees = () => {
   }, [API]);
 
   const [formData, setFormData] = useState({
-    image: "",
     name: "",
     hourlyPay: 0,
     hireDate: "",
@@ -46,16 +51,12 @@ const RenderEmployees = () => {
   });
 */
 
-  const [addedEmployee, setAddedEmployee] = useState([]);
-
-  const [showForm, setShowForm] = useState(false);
-
   /*
   useEffect(() => {
     localStorage.setItem("addedEmployee", JSON.stringify(addedEmployee));
   }, [addedEmployee]);
 */
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     /*
     if (!myEmployees) {
@@ -72,15 +73,25 @@ const RenderEmployees = () => {
       return alert("Please fill out all fields");
     }
 
+    /*
     const fakeId = Date.now();
     const newEmployee = {
       id: fakeId,
       ...formData,
     };
     const updatedEmployee = [...addedEmployee, newEmployee];
-    setAddedEmployee(updatedEmployee);
+*/
+
+    const response = await axios.post(`${API}/api/v1/new-employee`, {
+      employee_name: formData.name,
+      hourly_pay: formData.hourlyPay,
+      hire_date: formData.hireDate,
+      position: formData.position,
+    });
+    console.log("POST RESPONSE", response.data);
+
+    setAddedEmployee((prev) => [...prev, mapEmployeeFromAPI(response.data)]);
     setFormData({
-      image: "",
       name: "",
       hourlyPay: "",
       hireDate: "",
@@ -133,13 +144,24 @@ const RenderEmployees = () => {
       position: employee.position,
     });
   };
-  const [showButtons, setShowButtons] = useState(false);
-  const handleSave = (id) => {
-    setAddedEmployee((prev) =>
-      prev.map((e) => (e.id === id ? { ...e, ...editValues } : e)),
-    );
-    setEditingId(null);
-    setShowButtons(false);
+  const [showButtons, setShowButtons] = useState(null);
+  const handleSave = async (id) => {
+    try {
+      const response = await axios.patch(`${API}/api/v1/employees/${id}`, {
+        employee_name: editValues.name,
+        hourly_pay: editValues.hourlyPay,
+        hire_date: editValues.hireDate,
+        position: editValues.position,
+      });
+
+      setAddedEmployee((prev) =>
+        prev.map((e) => (e.id === id ? { ...e, ...editValues } : e)),
+      );
+      setEditingId(null);
+      setShowButtons(false);
+    } catch (error) {
+      console.error("Could not update. Please try again.", error);
+    }
   };
 
   const handleChange = (e) => {
@@ -161,25 +183,17 @@ const RenderEmployees = () => {
   return (
     <>
       <header className="header-container">
-        <div className="logo">
-          <img src="/src/assets/logo.png" />
+        <div className="header-title">
+          <h1>Employee Database API</h1>
         </div>
 
-        <nav className="nav-menu-container">
-          <ul className="nav-menu">
-            <li>Home</li>
-            <li>About</li>
-            <li>Contact</li>
-          </ul>
-        </nav>
-        <div className="login">Login</div>
+        <div className="logo">
+          <img src="/src/assets/logo.png" className="img-logo" />
+        </div>
       </header>
       <div className="employee-header">
         <div className="employee-title">
           <h4>Employee</h4>
-        </div>
-        <div className="employee-title">
-          <h4>Name</h4>
         </div>
         <div className="employee-title">
           <h4>Pay</h4>
@@ -232,14 +246,8 @@ const RenderInput = ({
       <form onSubmit={handleSubmit}>
         <div className="employee-container">
           <div>
-            <label htmlFor="employee" className="sr-only">
-              Employee
-            </label>
-            <input id="employee" className="image-container" />
-          </div>
-          <div>
             <label htmlFor="name" className="sr-only">
-              Name
+              Employee
             </label>
             <input
               id="name"
@@ -342,6 +350,8 @@ const RenderNames = ({
     const { name, value } = e.target;
     setEditValues((prev) => ({ ...prev, [name]: value }));
   };
+  console.log("addedEmployee:", addedEmployee);
+
   return (
     <>
       {addedEmployee.map((employee) => {
@@ -350,7 +360,6 @@ const RenderNames = ({
           <div key={employee.id} className="employee-container">
             {isEditing ? (
               <>
-                <input />
                 <input
                   name="name"
                   id="name"
@@ -376,7 +385,7 @@ const RenderNames = ({
                   value={editValues.position}
                   onChange={handleChange}
                 />
-                {showButtons && (
+                {showButtons === employee.id && (
                   <div className="edit-btn-container">
                     <RenderEditButtons
                       handleRemove={handleRemove}
@@ -389,11 +398,13 @@ const RenderNames = ({
               </>
             ) : (
               <>
-                <div>
-                  <div className="inputs" onClick={() => setShowButtons(true)}>
-                    Image
-                  </div>
-                  {showButtons && (
+                <div
+                  className="inputs"
+                  onClick={() => setShowButtons(employee.id)}
+                >
+                  <div>{employee.name}</div>
+
+                  {showButtons === employee.id && (
                     <RenderEditButtons
                       handleRemove={handleRemove}
                       handleEdit={handleEdit}
@@ -402,7 +413,7 @@ const RenderNames = ({
                     />
                   )}
                 </div>
-                <div className="inputs">{employee.name}</div>
+
                 <div className="inputs">{employee.hourlyPay}</div>
                 <div className="inputs">{employee.hireDate}</div>
                 <div className="inputs"> {employee.position}</div>
