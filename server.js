@@ -12,7 +12,8 @@ const employees = require("./routes/employees.js");
 app.use(
   cors({
     // origin: "http://localhost:5173",
-    origin: process.env.FRONTEND_URL,
+    origin: "https://employeedatabaseapp.netlify.app",
+
     credentials: true,
   }),
 );
