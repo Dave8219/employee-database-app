@@ -11,7 +11,8 @@ const employees = require("./routes/employees.js");
 // cors allows localhost frontend to connect to the backend
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    // origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL,
     credentials: true,
   }),
 );
